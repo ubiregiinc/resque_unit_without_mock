@@ -9,22 +9,22 @@ require 'support/jobs'
 require 'support/redis_maneger'
 require 'support/resque'
 
+if Resque.data_store.redis.connection[:port] == 6379
+  raise 'Use one-off redis-server process!'
+end
+
 class Minitest::TestWithRedis < Minitest::Test
   include Minitest::Hooks
 
   def before_all
-    RedisManeger.start
+    RedisManeger.start_redis_server
   end
 
   def after_all
-    RedisManeger.shutdown
+    RedisManeger.shutdown_redis_server
   end
 
   def setup
     Resque.reset!
   end
-end
-
-if Resque.redis.connection[:port] == 6379
-  raise 'do not use one process redis-server!'
 end

@@ -13,8 +13,11 @@ class ResqueHelpersTest < Minitest::TestWithRedis
     #      |=> queued!!
     #  |   |\\|\\\\\\\\
     #  1   2  3
+    assert_not_queued_at(Time.new(2011,11,11,0,0,2), PrintJob)
+    assert_not_queued_at(Time.new(2011,11,11,0,0,3), PrintJob)
     Resque.enqueue_at(Time.new(2011,11,11,0,0,2), PrintJob)
-    assert_queued_at(Time.new(2011,11,11,0,0,3), PrintJob)
     assert_not_queued_at(Time.new(2011,11,11,0,0,1), PrintJob)
+    assert_queued_at(Time.new(2011,11,11,0,0,2), PrintJob)
+    assert_queued_at(Time.new(2011,11,11,0,0,3), PrintJob)
   end
 end

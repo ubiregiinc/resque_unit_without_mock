@@ -4,7 +4,7 @@ class RedisManeger
   REDIS_CACHE_PATH = "#{root}/tmp/cache/".freeze
   PORT = 9_736
 
-  def self.start
+  def self.start_redis_server
     FileUtils.mkdir_p(['./tmp/pids', './tmp/cache'])
     FileUtils.rm_rf("#{REDIS_CACHE_PATH}/stdout")
 
@@ -25,8 +25,8 @@ class RedisManeger
     `echo '#{redis_options}' | redis-server -`
   end
 
-  def self.shutdown
-    Process.kill(:QUIT, File.read(REDIS_PID).chomp.to_i)
+  def self.shutdown_redis_server
+    Process.kill(:QUIT, File.read(REDIS_PID).to_i)
     FileUtils.rm_rf("#{REDIS_CACHE_PATH}dump.rdb")
   end
 end
