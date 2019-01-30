@@ -1,6 +1,14 @@
 require "test_helper"
 
 class ResqueHelpersTest < Minitest::TestWithRedis
+  def test_enqueue_at
+    assert_equal([], Resque.queued(:normal))
+    assert_equal([], Resque.enqueue_ats)
+    Resque.enqueue_at(Time.new(2011,11,11,0,0,0), TestJob, 'test_enqueue_at')
+    assert_equal(1, Resque.queued(:normal).size)
+    assert_equal(1, Resque.enqueue_ats.size)
+  end
+
   def test_resque_run
     assert_equal(0, Resque.info[:processed])
     Resque.enqueue(TestJob, 'test_resque_run')

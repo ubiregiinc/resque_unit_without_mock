@@ -1,8 +1,5 @@
 # TODO don't use Concern
 module ResqueUnitWithoutMock::ResqueHelpers
-  @@enqueue_ats = []
-  attr_reader :enqueue_ats
-
   def self.included(base)
     base.extend(ClassMethods)
   end
@@ -12,7 +9,8 @@ module ResqueUnitWithoutMock::ResqueHelpers
     # タイムスタンプを確認している.
     # 実物Redisを使うにあたって同じ振る舞いにしたいのでクラス変数を使ってresque_unitと同じことを実現する.
     def enqueue_at(timestamp, klass, *args)
-      enqueue_ats << { timestamp: timestamp, klass: klass, args: args }
+      @@enqueue_ats ||= []
+      @@enqueue_ats << { timestamp: timestamp, klass: klass, args: args }
       Resque.enqueue(klass, *args)
     end
 
@@ -35,6 +33,10 @@ module ResqueUnitWithoutMock::ResqueHelpers
 
     def queue_for(klass)
       klass.instance_variable_get(:@queue) || (klass.respond_to?(:queue) && klass.queue)
+    end
+
+    def enqueue_ats
+      @@enqueue_ats || []
     end
   end
 end
