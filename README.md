@@ -1,6 +1,6 @@
 # ResqueUnitWithoutMock
-現物redisにを使いながらresque_unitとほぼ同じIFのメソッドを提供するgemです。
-このgemを使うと、resque_unitを使っていたけど実物redisを使うテストに切り替える時に既存テストをほぼ維持したまま移行が可能です。
+現物redisにを使いながらresque_unitとほぼ同じIFのメソッドを提供するgemです。  
+このgemを使うと、resque_unitを使っていたけど実物redisを使うテストに切り替える時に既存テストをほぼ維持したまま移行が可能です。  
 minitestのみサポートしています。(please pull request for support rspec)
 
 ## Installation
@@ -17,9 +17,12 @@ And then execute:
 
 ## Usage
 ### resque_unitとの違い
-resque_unitで提供していた `Resque#queues` は `Resque#queued` になっています。
+resque_unitで提供していた `Resque.queues` は `Resque.queued` になっています。
 
-### `Resque.reset!` は使用するプロジェクト内で再定義してください
+### `Resque.reset!` はプロジェクト内で再定義してください
+専用のredis-serverプロセスを使っているなら `flushdb`でいいですが、  
+相乗りしているredis-serverの場合は https://gist.github.com/aserafin/6916037 みたいな感じで初期化するとよいでしょう。
+
 ```ruby
 # example
 module ResqueHelpersExt
