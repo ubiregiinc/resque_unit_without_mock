@@ -1,8 +1,10 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require "resque_unit_without_mock"
 
+require 'fileutils'
 require "minitest/autorun"
 require 'minitest/hooks/test'
+require 'resque'
 
 class Minitest::TestWithRedis < Minitest::Test
   include Minitest::Hooks
@@ -14,22 +16,26 @@ class Minitest::TestWithRedis < Minitest::Test
   def after_all
     RedisManeger.shutdown
   end
+
+  def setup
+    Resque.reset!
+  end
 end
 
-
 class RedisManeger
-  require 'fileutils'
   root = File.expand_path("../..", __FILE__)
   REDIS_PID = "#{root}/tmp/pids/redis-test.pid".freeze
   REDIS_CACHE_PATH = "#{root}/tmp/cache/".freeze
+  PORT = 9_736
 
   def self.start
     FileUtils.mkdir_p(['./tmp/pids', './tmp/cache'])
+    FileUtils.rm_rf("#{REDIS_CACHE_PATH}/stdout")
 
     redis_options = {
       'daemonize'     => 'yes',
       'pidfile'       => REDIS_PID,
-      'port'          => 9_736,
+      'port'          => PORT,
       'timeout'       => 300,
       'save 900'      => 1,
       'save 300'      => 1,
@@ -44,9 +50,24 @@ class RedisManeger
   end
 
   def self.shutdown
-    `
-      cat "#{REDIS_PID}" | xargs kill -QUIT
-      rm -f "#{REDIS_CACHE_PATH}dump.rdb"
-    `
+    Process.kill(:QUIT, File.read(REDIS_PID).chomp.to_i)
+    FileUtils.rm_rf("#{REDIS_CACHE_PATH}dump.rdb")
   end
 end
+
+Resque.redis = Redis.new(host: 'localhost', port: RedisManeger::PORT, thread_safe: true)
+
+class TestJob
+  @queue = :normal
+  def self.perform
+    puts 'hello TestJob'
+  end
+end
+
+module ResqueHelpersExt
+  def reset!
+    Resque.data_store.redis.flushdb
+    super
+  end
+end
+Resque.singleton_class.prepend(ResqueHelpersExt)

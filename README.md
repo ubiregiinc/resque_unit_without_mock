@@ -32,9 +32,7 @@ module ResqueHelpersExt
     super
   end
 end
-ResqueUnitWithoutMock::ResqueHelpers.singleton_class.prepend(
-  ResqueHelperExt
-)
+Resque.singleton_class.prepend(ResqueHelpersExt)
 ```
 
 ## License

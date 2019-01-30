@@ -1,12 +1,13 @@
 # TODO don't use Concern
-module ResqueUnitWithoutMockTest::ResqueHelpers
-  extend ActiveSupport::Concern
+module ResqueUnitWithoutMock::ResqueHelpers
+  @@enqueue_ats = []
+  attr_reader :enqueue_ats
 
-  included do
-    mattr_accessor :enqueue_ats, instance_accessor: false, default: []
+  def self.included(base)
+    base.extend(ClassMethods)
   end
 
-  class_methods do
+  module ClassMethods
     # resque_unit前提で書かれた既存テストではResque.enqueue_atするとすぐにエンキューしながら、
     # タイムスタンプを確認している.
     # 実物Redisを使うにあたって同じ振る舞いにしたいのでクラス変数を使ってresque_unitと同じことを実現する.
@@ -16,7 +17,7 @@ module ResqueUnitWithoutMockTest::ResqueHelpers
     end
 
     def reset!
-      self.enqueue_ats = []
+      @@enqueue_ats = []
     end
 
     def run!(queue_name=:normal)
@@ -29,8 +30,7 @@ module ResqueUnitWithoutMockTest::ResqueHelpers
     end
 
     def queued(queue_name=:normal)
-      sample_queues = Resque.sample_queues[queue_name.to_s] || {}
-      (sample_queues[:samples] || []).map(&:to_json)
+      Resque.redis.lrange("queue:#{queue_name}", 0, -1)
     end
 
     def queue_for(klass)
@@ -39,4 +39,4 @@ module ResqueUnitWithoutMockTest::ResqueHelpers
   end
 end
 
-Resque.include(ResqueUnitWithoutMockTest::ResqueHelpers)
+Resque.include(ResqueUnitWithoutMock::ResqueHelpers)

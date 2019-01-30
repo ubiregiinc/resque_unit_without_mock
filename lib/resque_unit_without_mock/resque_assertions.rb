@@ -1,4 +1,6 @@
-module ResqueUnitWithoutMockTest::ResqueAssertions
+require "minitest"
+
+module ResqueUnitWithoutMock::ResqueAssertions
   def assert_queued_at(expected_timestamp, klass)
     queue_name = Resque.queue_for(klass)
     result = Resque.enqueue_ats.detect { |hash| hash[:timestamp] <= expected_timestamp && hash[:klass] == klass }
@@ -38,4 +40,4 @@ module ResqueUnitWithoutMockTest::ResqueAssertions
   end
 end
 
-Minitest::Test.include(ResqueUnitWithoutMockTest::ResqueAssertions)
+Minitest::Test.include(ResqueUnitWithoutMock::ResqueAssertions)
