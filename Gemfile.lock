@@ -7,6 +7,8 @@ GEM
   remote: https://rubygems.org/
   specs:
     minitest (5.11.3)
+    minitest-hooks (1.5.0)
+      minitest (> 5.3)
     rake (10.5.0)
 
 PLATFORMS
@@ -15,6 +17,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.17)
   minitest (~> 5.0)
+  minitest-hooks
   rake (~> 10.0)
   resque_unit_without_mock!
 

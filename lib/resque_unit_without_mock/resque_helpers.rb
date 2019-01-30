@@ -12,7 +12,7 @@ module ResqueUnitWithoutMockTest::ResqueHelpers
     # 実物Redisを使うにあたって同じ振る舞いにしたいのでクラス変数を使ってresque_unitと同じことを実現する.
     def enqueue_at(timestamp, klass, *args)
       enqueue_ats << { timestamp: timestamp, klass: klass, args: args }
-      klass.perform_async(*args)
+      Resque.enqueue(klass, *args)
     end
 
     def reset!
