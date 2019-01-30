@@ -1,4 +1,3 @@
-# TODO don't use Concern
 module ResqueUnitWithoutMock::ResqueHelpers
   def self.included(base)
     base.extend(ClassMethods)
