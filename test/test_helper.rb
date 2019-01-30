@@ -7,6 +7,7 @@ require 'minitest/hooks/test'
 require 'resque'
 require 'support/jobs'
 require 'support/redis_maneger'
+require 'support/resque'
 
 class Minitest::TestWithRedis < Minitest::Test
   include Minitest::Hooks
@@ -24,3 +25,6 @@ class Minitest::TestWithRedis < Minitest::Test
   end
 end
 
+if Resque.redis.connection[:port] == 6379
+  raise 'do not use one process redis-server!'
+end
