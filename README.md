@@ -1,38 +1,38 @@
 # ResqueUnitWithoutMock
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/resque_unit_without_mock`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+現物redisにを使いながらresque_unitとほぼ同じIFのメソッドを提供するgemです。
+このgemを使うと、resque_unitを使っていたけど実物redisを使うテストに切り替える時に既存テストをほぼ維持したまま移行が可能です。
+minitestのみサポートしています。(please pull request for support rspec)
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'resque_unit_without_mock'
+gem 'resque_unit_without_mock', group: :test
 ```
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install resque_unit_without_mock
-
 ## Usage
+### resque_unitとの違い
+resque_unitで提供していた `Resque#queues` は `Resque#queued` になっています。
 
-TODO: Write usage instructions here
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/resque_unit_without_mock.
+### `Resque.reset!` は使用するプロジェクト内で再定義してください
+```ruby
+# example
+module ResqueHelpersExt
+  def reset!
+    Resque.data_store.redis.select(ENV['TEST_ENV_NUMBER'].to_i + 1)
+    Resque.data_store.redis.flushdb
+    super
+  end
+end
+ResqueUnitWithoutMock::ResqueHelpers.singleton_class.prepend(
+  ResqueHelperExt
+)
+```
 
 ## License
 
