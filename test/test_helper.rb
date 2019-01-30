@@ -57,10 +57,17 @@ end
 
 Resque.redis = Redis.new(host: 'localhost', port: RedisManeger::PORT, thread_safe: true)
 
-class TestJob
+class PrintJob
   @queue = :normal
   def self.perform
-    puts 'hello TestJob'
+    puts 'hello PrintJob'
+  end
+end
+
+class EndlessJob
+  @queue = :normal
+  def self.perform
+    Resque.enqueue(self)
   end
 end
 
