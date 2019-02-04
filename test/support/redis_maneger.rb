@@ -5,8 +5,8 @@ class RedisManeger
   PORT = 9_736
 
   def self.start_redis_server
-    FileUtils.rm_rf("./tmp")
     FileUtils.mkdir_p(['./tmp/pids', './tmp/cache'])
+    FileUtils.rm_rf("./tmp/stdout")
 
     redis_options = {
       'daemonize'     => 'yes',
