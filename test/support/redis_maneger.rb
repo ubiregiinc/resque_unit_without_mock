@@ -14,10 +14,8 @@ class RedisManeger
 
   def self.start_redis_server
     FileUtils.mkdir_p(["#{ROOT}/tmp/pids", "#{ROOT}/tmp/cache"])
-    begin
-      Process.kill(:QUIT, `cat #{REDIS_PID}`.to_i)
-    rescue
-    end
+    old_redis_pid = `cat #{REDIS_PID}`.to_i
+    Process.kill(:QUIT, `cat #{old_redis_pid}`) unless old_redis_pid.zero?
     FileUtils.rm_rf(REDIS_PID)
     FileUtils.rm_rf("#{ROOT}/tmp/stdout")
 
@@ -47,10 +45,8 @@ class RedisManeger
   end
 
   def self.shutdown_redis_server
-    begin
-      `cat #{REDIS_PID} | xargs kill -QUIT`
-    rescue
-    end
+    old_redis_pid = `cat #{REDIS_PID}`.to_i
+    Process.kill(:QUIT, `cat #{old_redis_pid}`) unless old_redis_pid.zero?
     `rm -rf #{REDIS_CACHE_PATH}dump.rdb`
   end
 end
