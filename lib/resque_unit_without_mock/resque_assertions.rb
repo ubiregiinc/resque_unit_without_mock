@@ -1,24 +1,6 @@
 require "minitest"
 
 module ResqueUnitWithoutMock::ResqueAssertions
-  def assert_queued_at(expected_timestamp, klass)
-    queue_name = Resque.queue_for(klass)
-    result = Resque.enqueue_ats.detect { |hash| hash[:timestamp] <= expected_timestamp && hash[:klass] == klass }
-    assert(
-      result,
-      "#{klass} should have been queued in #{Resque.enqueue_ats} before #{expected_timestamp}"
-    )
-  end
-
-  def assert_not_queued_at(expected_timestamp, klass)
-    queue_name = Resque.queue_for(klass)
-    result = Resque.enqueue_ats.detect { |hash| hash[:timestamp] <= expected_timestamp && hash[:klass] == klass }
-    assert(
-      !result,
-      "#{klass} should not have been queued in #{Resque.enqueue_ats} before #{expected_timestamp}"
-    )
-  end
-
   def assert_queued(klass, args = nil, &block)
     queue_name = Resque.queue_for(klass)
     queue = Resque.queued(queue_name).map{|x| JSON.parse(x) }

@@ -5,8 +5,8 @@ class RedisManeger
   PORT = 9_736
 
   def self.start_redis_server
+    FileUtils.rm_rf("./tmp")
     FileUtils.mkdir_p(['./tmp/pids', './tmp/cache'])
-    FileUtils.rm_rf("#{REDIS_CACHE_PATH}/stdout")
 
     redis_options = {
       'daemonize'     => 'yes',
@@ -23,6 +23,11 @@ class RedisManeger
       'databases'     => 16
     }.map { |k, v| "#{k} \"#{v}\"" }.join("\n")
     `echo '#{redis_options}' | redis-server -`
+    loop do
+      if /PONG/ =~ `redis-cli ping`
+        break
+      end
+    end
   end
 
   def self.shutdown_redis_server
