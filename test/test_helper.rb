@@ -16,15 +16,13 @@ end
 class Minitest::TestWithRedis < Minitest::Test
   include Minitest::Hooks
 
-  def before_all
-    RedisManeger.start_redis_server
-  end
-
-  def after_all
-    RedisManeger.shutdown_redis_server
-  end
-
   def setup
     Resque.reset!
   end
 end
+
+MiniTest.after_run do
+  RedisManeger.shutdown_redis_server
+end
+
+RedisManeger.start_redis_server
