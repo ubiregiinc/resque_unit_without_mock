@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["jiikko"]
   spec.email         = ["n905i.1214@gmail.com"]
 
-  spec.summary       = %q{provide resque_unit(without mock) methods}
+  spec.summary       = %q{resque_unit(without mock)}
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/jiikko/resque_unit_without_mock"
   spec.license       = "MIT"
