@@ -25,5 +25,3 @@ module ResqueUnitWithoutMock::ResqueHelpers
     end
   end
 end
-
-Resque.include(ResqueUnitWithoutMock::ResqueHelpers)

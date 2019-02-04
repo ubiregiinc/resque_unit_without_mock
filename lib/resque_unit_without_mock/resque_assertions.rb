@@ -30,5 +30,3 @@ module ResqueUnitWithoutMock::ResqueAssertions
     queue.select {|e| e["class"] == klass.to_s && (!args || e["args"] == normalized_args )}
   end
 end
-
-Minitest::Test.include(ResqueUnitWithoutMock::ResqueAssertions)
