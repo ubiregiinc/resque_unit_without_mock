@@ -1,6 +1,5 @@
 if !system("which redis-server")
   puts '', "** can't find `redis-server` in your path"
-  puts "** try running `sudo rake install`"
   abort ''
 end
 
@@ -14,7 +13,6 @@ class RedisManeger
 
   def self.start_redis_server
     FileUtils.mkdir_p(["#{ROOT}/tmp/pids", "#{ROOT}/tmp/cache"])
-    FileUtils.rm_rf(REDIS_PID)
     FileUtils.rm_rf("#{ROOT}/tmp/stdout")
 
     redis_options = {
@@ -31,7 +29,7 @@ class RedisManeger
       'logfile'       => 'stdout',
       'databases'     => 16
     }.map { |k, v| "#{k} \"#{v}\"" }.join("\n")
-    puts `echo "#{redis_options}" | redis-server -`
+    `echo "#{redis_options}" | redis-server -`
     Timeout.timeout(2) do
       loop do
         if /PONG/ =~ `redis-cli -p #{PORT} ping`
@@ -49,6 +47,7 @@ class RedisManeger
       rescue
       end
     end
-    `rm -rf #{REDIS_CACHE_PATH}dump.rdb`
+    FileUtils.rm_rf(REDIS_PID)
+    FileUtils.rm_rf("#{REDIS_CACHE_PATH}dump.rdb")
   end
 end
