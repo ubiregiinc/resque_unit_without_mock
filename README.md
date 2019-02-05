@@ -15,10 +15,10 @@ And then execute:
 
     $ bundle
 
-## Usage
-### resque_unitとの違い
+## `resque_unit`との違い
 resque_unitで提供していた `Resque.queues` は `Resque.queued` になっています。
 
+## Usage
 ### `Resque.reset!` はプロジェクト内で再定義してください
 専用のredis-serverプロセスを使っているなら `flushdb`でいいですが、  
 相乗りしているredis-serverの場合は https://gist.github.com/aserafin/6916037 みたいな感じで初期化するとよいでしょう。
