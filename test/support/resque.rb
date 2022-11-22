@@ -1,4 +1,4 @@
-Resque.redis = Redis.new(host: 'localhost', port: RedisManeger::PORT, thread_safe: true)
+Resque.redis = Redis.new(host: 'localhost', port: RedisManeger::PORT)
 
 module ResqueHelpersExt
   def reset!
