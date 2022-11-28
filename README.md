@@ -35,6 +35,11 @@ end
 Resque.singleton_class.prepend(ResqueHelpersExt)
 ```
 
+## Development
+* docker compose run --rm app bash
+* bundle install
+* bundle exec rake
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
