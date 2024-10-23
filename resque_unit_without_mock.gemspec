@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{resque_unit(without mock)}
   spec.description   = spec.summary
-  spec.homepage      = "https://github.com/jiikko/resque_unit_without_mock"
+  spec.homepage      = "https://github.com/ubiregiinc/resque_unit_without_mock"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.7.0")
 
