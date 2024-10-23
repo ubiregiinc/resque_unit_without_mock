@@ -17,7 +17,7 @@ module ResqueUnitWithoutMock::Scheduler
       @@enqueue_ats ||= {}
       @@enqueue_ats[queue] ||= []
       @@enqueue_ats[queue] << { timestamp: timestamp, klass: klass, args: args }
-      Resque.enqueue(klass, *args)
+      Resque.enqueue_to(queue, klass, *args)
     end
 
     def enqueue_ats(queue)
